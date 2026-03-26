@@ -1,17 +1,29 @@
-# aisymtoms
+# AI Symptom Checker – HealthTech Hackathon Project
 
-A new Flutter project.
+A Flutter-based HealthTech mobile application that helps users check possible health conditions based on selected symptoms.
 
-## Getting Started
+## Features
+- User Registration & Login
+- Symptom Selection
+- AI-based Condition Prediction
+- Health Advice Suggestions
+- Save Reports Locally using SQLite
 
-This project is a starting point for a Flutter application.
+## Tech Stack
+- Flutter
+- Dart
+- SQLite (sqflite)
 
-A few resources to get you started if this is your first Flutter project:
+## Project Goal
+This project was developed as a hackathon MVP to provide a quick and easy health symptom checking experience for users.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## How to Run
+1. Clone the repository
+2. Run `flutter pub get`
+3. Run `flutter run`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Future Improvements
+- Admin dashboard
+- Doctor consultation integration
+- Cloud database support
+- Better AI prediction engine
