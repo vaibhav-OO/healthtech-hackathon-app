@@ -42,9 +42,18 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const Text("Advice", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text(top.key.advice, style: const TextStyle(fontSize: 18)),
+            Text(
+                top.key.advice,
+                style: const TextStyle(fontSize: 18)
+            ),
             const SizedBox(height: 24),
-            const Text("Other Possibilities", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(
+                "Other Possibilities",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                )
+            ),
             const SizedBox(height: 8),
             ...results.take(3).map((e) => Text("${e.key.name} — ${e.value}%")),
             const Spacer(),
@@ -68,7 +77,8 @@ class ResultScreen extends StatelessWidget {
 
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Report saved successfully")),
+                    const SnackBar(content: Text("Report saved successfully")
+                    ),
                   );
                 },
                 child: const Text("Save Report"),

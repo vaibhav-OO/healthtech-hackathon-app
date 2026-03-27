@@ -6,7 +6,13 @@ import 'result_screen.dart';
 
 class HomeScreen extends StatefulWidget{
   final UserModel user;
-  const HomeScreen({super.key, required this.user});
+  final VoidCallback toggleTheme;
+
+  const HomeScreen({
+    super.key,
+    required this.user,
+    required this.toggleTheme
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
