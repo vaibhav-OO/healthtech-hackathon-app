@@ -12,6 +12,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -57,6 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 try {
                   await DBService.instance.registerUser(
                     UserModel(
+                      name: nameController.text.trim(),
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
                     ),
@@ -82,7 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
                 child: const Text("Register"),
             ),
-
           ],
         ),
       ),

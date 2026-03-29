@@ -3,6 +3,7 @@ import '../services/db_service.dart';
 import '../models/user.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'admin_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool loading = false;
 
+  // ================= HIDDEN ADMIN CREDENTIALS =================
+  final String adminEmail = "admin@aisymptom.com";
+  final String adminPassword = "admin123";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,26 +31,48 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Icon(Icons.health_and_safety, size: 80, color: Colors.teal),
+            const SizedBox(height: 20),
+
             TextField(
               controller: emailController,
               decoration: const InputDecoration(labelText: "Email"),
             ),
             const SizedBox(height: 12),
+
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Password"),
             ),
             const SizedBox(height: 20),
+
             loading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
               onPressed: () async {
                 setState(() => loading = true);
 
+                final email = emailController.text.trim();
+                final password = passwordController.text.trim();
+
+                // ================= ADMIN LOGIN CHECK =================
+                if (email == adminEmail && password == adminPassword) {
+                  setState(() => loading = true);
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AdminScreen(),
+                    ),
+                  );
+                  return;
+                }
+
+                // ================= NORMAL USER LOGIN =================
                 UserModel? user = await DBService.instance.loginUser(
-                  emailController.text.trim(),
-                  passwordController.text.trim(),
+                  email,
+                  password,
                 );
 
                 setState(() => loading = false);
@@ -65,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: const Text("Login"),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.push(

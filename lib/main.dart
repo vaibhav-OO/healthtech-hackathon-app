@@ -122,17 +122,20 @@
 // }
 
 
-import 'package:aisymtoms/main.dart';
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-import 'utils/theme_provider.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-//Stateful widget have one more class to extends super class
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  static _MyAppState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_MyAppState>();
+  }
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -140,7 +143,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isDarkMode = false;
 
-  void  toggleTheme() {
+  void toggleTheme() {
     setState(() {
       isDarkMode = !isDarkMode;
     });
@@ -151,54 +154,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'AI Symptom Checker',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
+      theme: ThemeData.light().copyWith(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+      ),
       darkTheme: ThemeData.dark(),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: LoginScreen(toggleTheme: toggleTheme),
+      home: const SplashScreen(),
     );
   }
 }
-
-
-
-//Stateless widget class
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'SymptomSense SQL',
-//       theme: ThemeData(
-//         primarySwatch: Colors.teal,
-//       ),
-//       home: const LoginScreen(),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
