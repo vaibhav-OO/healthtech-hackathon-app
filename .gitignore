@@ -51,3 +51,6 @@ build/
 
 # Windows
 **/windows/flutter/ephemeral/
+
+# Env file for API keys
+.env
