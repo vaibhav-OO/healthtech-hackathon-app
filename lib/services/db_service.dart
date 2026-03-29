@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import 'package:flutter/material.dart';
 // import 'package:sqflite/sqflite.dart';
 // import 'package:path/path.dart';
@@ -83,6 +84,8 @@
 
 
 
+=======
+>>>>>>> f36cfd0d4a62cf715d757930314bbfc893f928ee
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/user.dart';
@@ -206,4 +209,7 @@ class DBService {
     return result.map((map) => ReportModel.fromMap(map)).toList();
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> f36cfd0d4a62cf715d757930314bbfc893f928ee
