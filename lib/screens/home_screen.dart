@@ -1,136 +1,3 @@
-// import 'package:flutter/material.dart';
-// import '../data/symptoms.dart';
-// import '../engine/checker.dart';
-// import '../models/user.dart';
-// import 'result_screen.dart';
-//
-// class HomeScreen extends StatefulWidget{
-//   final UserModel user;
-//   final VoidCallback toggleTheme;
-//
-//   const HomeScreen({
-//     super.key,
-//     required this.user,
-//     required this.toggleTheme
-//   });
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-//
-// }
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   List<String> selected = [];
-//
-//   final Map<String, IconData> symptomIcons = {
-//     "Fever": Icons.thermostat,
-//     "cough": Icons.sick,
-//     "Fatigue": Icons.battery_alert,
-//     "Headache": Icons.psychology,
-//     "Nausea": Icons.sick_outlined,
-//     "Loss Smell": Icons.face,
-//     "Sneezing": Icons.air,
-//     "Runny Nose": Icons.face_2_rounded,
-//     "Sore Throat": Icons.record_voice_over,
-//     "Body Pain": Icons.accessibility_new,
-//     "Diarrhea": Icons.water_drop,
-//     "Rash": Icons.bug_report,
-//     "Dizziness": Icons.sync_problem,
-//     "Chest Pain": Icons.favorite,
-//     "Breathing Issue": Icons.air_outlined,
-//   };
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return  Scaffold(
-//       appBar: AppBar(title: const Text("Select Symptoms"),),
-//       body: Column(
-//         children: [
-//           Expanded(child: ListView.builder(
-//               itemCount: symptomsList.length,
-//               itemBuilder: (context, index)
-//               {
-//                 final symptom = symptomsList[index];
-//                 return CheckboxListTile(
-//                   secondary: Icon(
-//                     symptomIcons[symptom] ?? Icons.health_and_safety,
-//                   ),
-//                   title: Text(symptom),
-//                   value: selected.contains(symptom),
-//                   onChanged: (value){
-//                     setState(() {
-//                       if (selected.contains(symptom)){
-//                         selected.remove(symptom);
-//                       }
-//                       else {
-//                         selected.add(symptom);
-//                       }
-//                     });
-//                   },
-//                 );
-//               }
-//           )
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(16),
-//           child: Container(
-//             width: double.infinity,
-//             decoration: BoxDecoration(
-//               gradient: const LinearGradient(
-//                   colors: [Colors.teal, Colors.green],
-//               ),
-//               borderRadius: BorderRadius.circular(12),
-//             ),
-//
-//             child: MaterialButton(onPressed: () async {
-//               if (selected.isEmpty)
-//                 {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(
-//                       content: Text("please select at least one symptom"),
-//                     ),
-//                   );
-//                   return;
-//                 }
-//               showDialog(
-//                 context: context,
-//                 barrierDismissible: false,
-//                 builder: (_) => const Center(child: CircularProgressIndicator(),
-//                 ),
-//               );
-//
-//               await Future.delayed(const Duration(seconds: 1));
-//
-//               final result = checkDisease(selected);
-//
-//               Navigator.pop(context);
-//
-//               Navigator.push(
-//                 context,
-//                   MaterialPageRoute(
-//                       builder: (_) => ResultScreen(
-//                           results: result,
-//                           selectedSymptoms: selected,
-//                           user: widget.user,
-//                       ),
-//                   ),
-//               );
-//             },
-//               child: const Text("Check Condition",
-//                 style: TextStyle(
-//                     color: Colors.white, fontSize: 16
-//                 ),
-//               ),
-//             ),
-//           ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import '../data/symptoms.dart';
 import '../engine/checker.dart';
@@ -144,7 +11,6 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
-
   const HomeScreen({super.key, required this.user});
 
   @override
@@ -194,11 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
       barrierDismissible: false,
       builder: (_) => const Center(child: CircularProgressIndicator()),
     );
-
     await Future.delayed(const Duration(seconds: 2));
-
     final results = checkDisease(selected);
-
     Navigator.pop(context);
 
     Navigator.push(
@@ -215,13 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void autoSelectSymptoms(String text) {
     final detected = <String>[];
-
     for (var symptom in symptomsList) {
       if (text.contains(symptom.toLowerCase())) {
         detected.add(symptom);
       }
     }
-
     setState(() {
       selected = detected;
     });
@@ -235,7 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (available) {
       setState(() => isListening = true);
-
       speech.listen(
         onResult: (result) {
           setState(() {
@@ -260,122 +120,176 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => isListening = false);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("AI Symptom Checker"),
+  Future<bool> _onWillPop() async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Exit App"),
+        content: const Text("Are you sure you want to exit?"),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ProfileScreen(user: widget.user),
-                ),
-              );
-            },
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
           ),
-          IconButton(
-            icon: Icon(
-              Theme.of(context).brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () {
-              MyApp.of(context)?.toggleTheme();
-            },
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("Exit"),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 10),
-          Text(
-            "Welcome, ${widget.user.email}",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              "Select your symptoms below or speak them",
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  if (isListening) {
-                    stopListening();
-                  } else {
-                    startListening();
-                  }
-                },
-                icon: Icon(isListening ? Icons.mic : Icons.mic_none),
-                label: Text(isListening ? "Listening..." : "Speak Symptoms"),
-              ),
-            ),
-          ),
-          if (spokenText.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                "Detected: $spokenText",
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: symptomsList.length,
-              itemBuilder: (context, index) {
-                final symptom = symptomsList[index];
-                return CheckboxListTile(
-                  secondary:
-                  Icon(symptomIcons[symptom] ?? Icons.health_and_safety),
-                  title: Text(symptom),
-                  value: selected.contains(symptom),
-                  onChanged: (value) {
-                    setState(() {
-                      if (selected.contains(symptom)) {
-                        selected.remove(symptom);
-                      } else {
-                        selected.add(symptom);
-                      }
-                    });
-                  },
+    ) ??
+        false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scaffoldBg = isDark ? Colors.grey[900] : Colors.green[50];
+
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: scaffoldBg,
+        appBar: AppBar(
+          title: const Text("AI Symptom Checker"),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(user: widget.user),
+                  ),
                 );
               },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                GradientButton(
-                  text: "Check Symptoms",
-                  onPressed: checkSymptoms,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => HistoryScreen(user: widget.user),
-                      ),
-                    );
-                  },
-                  child: const Text("View History"),
-                ),
-              ],
+            IconButton(
+              icon: Icon(
+                isDark ? Icons.light_mode : Icons.dark_mode,
+              ),
+              onPressed: () {
+                MyApp.of(context)?.toggleTheme();
+              },
             ),
-          ),
-        ],
+          ],
+        ),
+        body: Column(
+          children: [
+            const SizedBox(height: 10),
+            Text(
+              "Welcome, ${widget.user.email}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
+                "Select your symptoms below or speak them",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    isDark ? const Color(0xFF66BB6A) : const Color(0xFF43A047),
+                    foregroundColor: isDark ? Colors.black : Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () {
+                    if (isListening) {
+                      stopListening();
+                    } else {
+                      startListening();
+                    }
+                  },
+                  icon: Icon(isListening ? Icons.mic : Icons.mic_none),
+                  label: Text(isListening ? "Listening..." : "Speak Symptoms"),
+                ),
+              ),
+            ),
+            if (spokenText.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  "Detected: $spokenText",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: isDark ? Colors.white70 : Colors.black87,
+                  ),
+                ),
+              ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: symptomsList.length,
+                itemBuilder: (context, index) {
+                  final symptom = symptomsList[index];
+                  return CheckboxListTile(
+                    secondary: Icon(
+                      symptomIcons[symptom] ?? Icons.health_and_safety,
+                      color: isDark ? Colors.green[300] : Colors.green[700],
+                    ),
+                    title: Text(
+                      symptom,
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    value: selected.contains(symptom),
+                    onChanged: (value) {
+                      setState(() {
+                        if (selected.contains(symptom)) {
+                          selected.remove(symptom);
+                        } else {
+                          selected.add(symptom);
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  GradientButton(
+                    text: "Check Symptoms",
+                    onPressed: checkSymptoms,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      isDark ? const Color(0xFF66BB6A) : const Color(0xFF43A047),
+                      foregroundColor: isDark ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => HistoryScreen(user: widget.user),
+                        ),
+                      );
+                    },
+                    child: const Text("View History"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

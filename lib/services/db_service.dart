@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // import 'package:flutter/material.dart';
 // import 'package:sqflite/sqflite.dart';
 // import 'package:path/path.dart';
@@ -84,8 +83,7 @@
 
 
 
-=======
->>>>>>> f36cfd0d4a62cf715d757930314bbfc893f928ee
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/user.dart';
@@ -151,10 +149,17 @@ class DBService {
     return Sqflite.firstIntValue(result) ?? 0;
   }
 
+  //normal app use
   Future<List<ReportModel>> getAllReports() async {
     final db = await database;
     final result = await db.query('reports', orderBy: 'id DESC');
     return result.map((map) => ReportModel.fromMap(map)).toList();
+  }
+
+  //admin dashboard
+  Future<List<Map<String, dynamic>>> getAllReportsRaw() async {
+    final db = await database;
+    return await db.query('reports', orderBy: 'id DESC');
   }
 
 
@@ -209,7 +214,3 @@ class DBService {
     return result.map((map) => ReportModel.fromMap(map)).toList();
   }
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> f36cfd0d4a62cf715d757930314bbfc893f928ee

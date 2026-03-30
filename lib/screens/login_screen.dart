@@ -15,16 +15,40 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
   bool loading = false;
 
   // ================= HIDDEN ADMIN CREDENTIALS =================
   final String adminEmail = "admin@aisymptom.com";
   final String adminPassword = "admin123";
 
+
+  Future<bool> _onWillPop() async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Exit App"),
+        content: const Text("Are you sure you want to exit?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("Exit"),
+          ),
+        ],
+      ),
+    ) ??
+        false;
+  }
+
+  //All widgets
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
       appBar: AppBar(title: const Text("Login")),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -60,15 +84,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (email == adminEmail && password == adminPassword) {
                   setState(() => loading = true);
 
+                  final adminUser = UserModel(
+                    id: 0,
+                    name: "Admin",
+                    email: adminEmail,
+                    password: adminPassword,
+                  );
+
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const AdminScreen(),
+                      builder: (_) => AdminScreen(user: adminUser),
                     ),
                   );
                   return;
                 }
-
                 // ================= NORMAL USER LOGIN =================
                 UserModel? user = await DBService.instance.loginUser(
                   email,
@@ -104,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 }
